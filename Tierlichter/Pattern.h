@@ -12,6 +12,26 @@
 #include <EEPROM.h>
 #include <math.h>
 
+#define OFFSET_COMP_BACK_1 0
+#define OFFSET_COMP_BACK_2 3
+#define OFFSET_COMP_BACK_3 7
+#define OFFSET_COMP_BACK_4 11
+
+#define LENGTH_COMP_BACK_1 3
+#define LENGTH_COMP_BACK_2 4
+#define LENGTH_COMP_BACK_3 4
+#define LENGTH_COMP_BACK_4 3
+
+#define OFFSET_COMP_FRONT_1 25
+#define OFFSET_COMP_FRONT_2 22
+#define OFFSET_COMP_FRONT_3 18
+#define OFFSET_COMP_FRONT_4 14
+
+#define LENGTH_COMP_FRONT_1 3
+#define LENGTH_COMP_FRONT_2 4
+#define LENGTH_COMP_FRONT_3 4
+#define LENGTH_COMP_FRONT_4 3
+
 #define BALL_COUNT 10
 struct ball{
 	uint8_t pos;
@@ -106,13 +126,18 @@ class Pattern {
 
 	bool first;
 	bool onRand;
+	uint comp;
 	ball balls[BALL_COUNT];
 	long laststep;
 	double step;
 
+	bool first_strobe;
+	long strobe_start;
+	long strobe_time;
 	uint32_t strobecounter;
 
 	size_t length;
+	size_t side_length;
 
 	CRGB baseColor;
 	CRGB frontColor;
@@ -120,7 +145,13 @@ class Pattern {
 
 	CRGB* leds;
 
+	CRGB* backleds;
+	CRGB* frontleds;
 
+	CRGB* combartmentback1;
+	CRGB* combartmentback2;
+	CRGB* combartmentback3;
+	CRGB* combartmentback4;
 
 public:
 	EEpromSave savedVals;
@@ -135,12 +166,16 @@ public:
 	CRGB colors(int color);
 	CRGB dimByVal(CRGB& color, double Value);
 
+	void fillCompartmentBack(CRGB color, int num);
+	void fillCompartmentFront(CRGB color, int num);
+
 	//pattern funcitons
 	void baseLinDimm();
 	void baseQuadDimm();
 	void baseRectDimm();
 	void baseQuadDimmRand50();
 	void baseStatic();
+	void baseCompartements();
 
 	void frontBallUp();
 	void frontBallDown();
@@ -150,6 +185,8 @@ public:
 	void frontRand1();
 	void frontRand2();
 	void frontRand3();
+
+	void getMillis();
 
 	void strobeStandard();
 	void strobeRand();
@@ -395,6 +432,30 @@ public:
 
 	void setStrobeStep(uint8_t strobeStep) {
 		this->strobeStep = strobeStep;
+	}
+
+	bool isFirstStrobe() const {
+		return first_strobe;
+	}
+
+	void setFirstStrobe(bool firstStrobe) {
+		first_strobe = firstStrobe;
+	}
+
+	long getStrobeStart() const {
+		return strobe_start;
+	}
+
+	void setStrobeStart(long strobeStart) {
+		strobe_start = strobeStart;
+	}
+
+	long getStrobeTime() const {
+		return strobe_time;
+	}
+
+	void setStrobeTime(long strobeTime) {
+		strobe_time = strobeTime;
 	}
 };
 

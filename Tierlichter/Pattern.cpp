@@ -11,7 +11,9 @@ Pattern::Pattern(CRGB* leds, size_t length) {
 	// TODO Auto-generated constructor stub
 	this->leds = leds;
 	this->length = length;
-
+	this->backleds = leds;
+	this->frontleds = leds + length/2;
+	this->side_length = length / 2;
 	nbasePattern = 1;
 	nbaseColor = 1;
 	nbaseSpeed = 1;
@@ -56,43 +58,43 @@ double Pattern::quadApp(double amp1, double amp2, double deltax, double x) {
 }
 
 void Pattern::baseLinDimm() {
-	if(millisSinceBeat < dutyCycle/255 * nbaseSpeed * beatPeriodMillis){
+	if(millisSinceBeat < nbaseSpeed/255 * beatPeriodMillis){
 		CRGB col(baseColor);
 
-		col.r = (unsigned int)(linearApp(col.r, 0, dutyCycle/255 *beatPeriodMillis, millisSinceBeat));
-		col.g = (unsigned int)(linearApp(col.g, 0, dutyCycle/255 *beatPeriodMillis, millisSinceBeat));
-		col.b = (unsigned int)(linearApp(col.b, 0, dutyCycle/255 *beatPeriodMillis, millisSinceBeat));
-		fill_solid(leds, length, dimByVal(col, nbaseDim));
+		col.r = (unsigned int)(linearApp(col.r, 0, nbaseSpeed/255 *beatPeriodMillis, millisSinceBeat));
+		col.g = (unsigned int)(linearApp(col.g, 0, nbaseSpeed/255 *beatPeriodMillis, millisSinceBeat));
+		col.b = (unsigned int)(linearApp(col.b, 0, nbaseSpeed/255 *beatPeriodMillis, millisSinceBeat));
+		fill_solid(backleds, side_length, dimByVal(col, nbaseDim));
 	}
 	else{
-		fill_solid(this->leds, length, CRGB::Black);
+		fill_solid(this->backleds, side_length, CRGB::Black);
 	}
 }
 
 void Pattern::baseQuadDimm() {
-	if(millisSinceBeat < dutyCycle/255 * nbaseSpeed * beatPeriodMillis){
+	if(millisSinceBeat < nbaseSpeed/255 * beatPeriodMillis){
 		CRGB col(baseColor);
 
-		col.r = (unsigned int)(quadApp(col.r, 0, dutyCycle/255 * beatPeriodMillis, millisSinceBeat));
-		col.g = (unsigned int)(quadApp(col.g, 0, dutyCycle/255 * beatPeriodMillis, millisSinceBeat));
-		col.b = (unsigned int)(quadApp(col.b, 0, dutyCycle/255 * beatPeriodMillis, millisSinceBeat));
-		fill_solid(leds, length, dimByVal(col, nbaseDim));
+		col.r = (unsigned int)(quadApp(col.r, 0, nbaseSpeed/255 * beatPeriodMillis, millisSinceBeat));
+		col.g = (unsigned int)(quadApp(col.g, 0, nbaseSpeed/255 * beatPeriodMillis, millisSinceBeat));
+		col.b = (unsigned int)(quadApp(col.b, 0, nbaseSpeed/255 * beatPeriodMillis, millisSinceBeat));
+		fill_solid(backleds, side_length, dimByVal(col, nbaseDim));
 	}
 	else{
-		fill_solid(this->leds, length, CRGB::Black);
+		fill_solid(this->backleds, side_length, CRGB::Black);
 	}
 }
 
 void Pattern::baseRectDimm() {
-	if(millisSinceBeat <  dutyCycle/255 * nbaseSpeed * beatPeriodMillis){
-		fill_solid(this->leds, length, dimByVal(baseColor, nbaseDim));
+	if(millisSinceBeat <  nbaseSpeed/255 * beatPeriodMillis){
+		fill_solid(this->backleds, side_length, dimByVal(baseColor, nbaseDim));
 	}
 	else{
-		fill_solid(this->leds, length, CRGB::Black);
+		fill_solid(this->backleds, side_length, CRGB::Black);
 	}
 }
 void Pattern::baseStatic() {
-	fill_solid(this->leds, length, dimByVal(baseColor, nbaseDim));
+	fill_solid(this->backleds, side_length, dimByVal(baseColor, nbaseDim));
 }
 
 void Pattern::baseQuadDimmRand50() {
@@ -106,21 +108,45 @@ void Pattern::baseQuadDimmRand50() {
 	if (millisSinceBeat > 0) {
 		first = true;
 	}
-	if(millisSinceBeat < dutyCycle/255 * nbaseSpeed * beatPeriodMillis && onRand){
+	if(millisSinceBeat < nbaseSpeed/255 * beatPeriodMillis && onRand){
 		CRGB col(baseColor);
 
-		col.r = (unsigned int)(quadApp(col.r, 0, dutyCycle/255 * beatPeriodMillis, millisSinceBeat));
-		col.g = (unsigned int)(quadApp(col.g, 0, dutyCycle/255 * beatPeriodMillis, millisSinceBeat));
-		col.b = (unsigned int)(quadApp(col.b, 0, dutyCycle/255 * beatPeriodMillis, millisSinceBeat));
-		fill_solid(leds, length, dimByVal(col, nbaseDim));
+		col.r = (unsigned int)(quadApp(col.r, 0, nbaseSpeed/255 * beatPeriodMillis, millisSinceBeat));
+		col.g = (unsigned int)(quadApp(col.g, 0, nbaseSpeed/255 * beatPeriodMillis, millisSinceBeat));
+		col.b = (unsigned int)(quadApp(col.b, 0, nbaseSpeed/255 * beatPeriodMillis, millisSinceBeat));
+		fill_solid(backleds, side_length, dimByVal(col, nbaseDim));
 	}
 	else{
-		fill_solid(this->leds, length, CRGB::Black);
+		fill_solid(this->backleds, side_length, CRGB::Black);
 	}
 }
 
+void Pattern::baseCompartements() {
+	if(millisSinceBeat == 0 && first){
+		first = false;
+		comp = rand() % 4;
+	}
+	if (millisSinceBeat > 0) {
+		first = true;
+	}
+
+	if(millisSinceBeat < nbaseSpeed/255 * beatPeriodMillis){
+		CRGB col(baseColor);
+
+		col.r = (unsigned int)(quadApp(col.r, 0, nbaseSpeed/255 * beatPeriodMillis, millisSinceBeat));
+		col.g = (unsigned int)(quadApp(col.g, 0, nbaseSpeed/255 * beatPeriodMillis, millisSinceBeat));
+		col.b = (unsigned int)(quadApp(col.b, 0, nbaseSpeed/255 * beatPeriodMillis, millisSinceBeat));
+		fillCompartmentBack(dimByVal(col, nbaseDim), comp);
+	}
+	else{
+		fill_solid(this->backleds, side_length, CRGB::Black);
+	}
+}
+
+
+
 void Pattern::frontBallUp() {
-	step = (double) this->nfrontSpeed / 20.0 * beatPeriodMillis / ((double)length);
+	step = (double) this->nfrontSpeed / 20.0 * beatPeriodMillis / ((double)side_length);
 	if(millisSinceBeat == 0){
 		//Serial.print("New");
 		for(int i = 0; i < BALL_COUNT; i++){
@@ -141,8 +167,8 @@ void Pattern::frontBallUp() {
 		for(int i = 0; i < BALL_COUNT; i++){
 			if(balls[i].active == true){
 				balls[i].pos++;
-				if(balls[i].pos < length){
-					leds[balls[i].pos] = dimByVal(balls[i].color, nfrontDim);
+				if(balls[i].pos < side_length){
+					backleds[balls[i].pos] = dimByVal(balls[i].color, nfrontDim);
 				}
 				else{
 					balls[i].active = false;
@@ -154,21 +180,21 @@ void Pattern::frontBallUp() {
 	else{
 		for(int i = 0; i < BALL_COUNT; i++){
 			if(balls[i].active == true){
-				leds[balls[i].pos] = dimByVal(balls[i].color, nfrontDim);
+				backleds[balls[i].pos] = dimByVal(balls[i].color, nfrontDim);
 			}
 		}
 	}
 }
 
 void Pattern::frontBallDown() {
-	step = (double) this->nfrontSpeed / 20.0 * beatPeriodMillis / ((double)length);
+	step = (double) this->nfrontSpeed / 20.0 * beatPeriodMillis / ((double)side_length);
 	if(millisSinceBeat == 0){
 		//Serial.print("New");
 		for(int i = 0; i < BALL_COUNT; i++){
 			if(balls[i].active == false){
 				balls[i].active = true;
 				balls[i].color = frontColor;
-				balls[i].pos = length-1;
+				balls[i].pos = side_length-1;
 				break;
 			}
 		}
@@ -184,7 +210,7 @@ void Pattern::frontBallDown() {
 
 				if(balls[i].pos > 0){
 					balls[i].pos--;
-					leds[balls[i].pos] = dimByVal(balls[i].color, nfrontDim);
+					backleds[balls[i].pos] = dimByVal(balls[i].color, nfrontDim);
 				}
 				else{
 					balls[i].active = false;
@@ -196,7 +222,7 @@ void Pattern::frontBallDown() {
 	else{
 		for(int i = 0; i < BALL_COUNT; i++){
 			if(balls[i].active == true){
-				leds[balls[i].pos] = dimByVal(balls[i].color, nfrontDim);
+				backleds[balls[i].pos] = dimByVal(balls[i].color, nfrontDim);
 			}
 		}
 	}
@@ -216,7 +242,7 @@ void Pattern::frontRand1() {
 		for(int i = 0; i < (int)(dutyCycle/255*BALL_COUNT); i++){
 			balls[i].active = true;
 			balls[i].color = frontColor;
-			balls[i].pos = rand()%(length);
+			balls[i].pos = rand()%(side_length);
 		}
 	}
 	if(millisSinceBeat < beatPeriodMillis){
@@ -228,14 +254,14 @@ void Pattern::frontRand1() {
 
 		for(int i = 0; i < BALL_COUNT; i++){
 			if(balls[i].active){
-				leds[balls[i].pos] = dimByVal(balls[i].color, nfrontDim);
+				backleds[balls[i].pos] = dimByVal(balls[i].color, nfrontDim);
 			}
 		}
 	}
 	else{
 		for(int i = 0; i < BALL_COUNT; i++){
 			if(balls[i].active){
-				leds[balls[i].pos] = CRGB::Black;
+				backleds[balls[i].pos] = CRGB::Black;
 			}
 		}
 	}
@@ -249,7 +275,7 @@ void Pattern::frontRand3() {
 }
 
 void Pattern::strobeStandard() {
-	if(millis() % (int)(nstrobeSpeed) < 20){
+	if(strobe_time % (int)(nstrobeSpeed) < 20){
 		fill_solid(leds, length, dimByVal(strobeColor, nstrobeDim));
 	}
 	else{
@@ -321,7 +347,7 @@ CRGB Pattern::colors(int color) {
 }
 
 void Pattern::fillBlack() {
-	fill_solid(leds, length, CRGB::Black);
+	fill_solid(backleds, length, CRGB::Black);
 }
 
 void Pattern::setSettings() {
@@ -367,7 +393,7 @@ void Pattern::frontChoser() {
 }
 
 void Pattern::baseChoser() {
-	int temp = (int)(nbasePattern / 255 * 5);
+	int temp = (int)(nbasePattern / 255 * 6);
 	//Serial.println(temp);
 	switch(temp){
 	case 1:
@@ -383,6 +409,9 @@ void Pattern::baseChoser() {
 		baseQuadDimmRand50();
 		break;
 	case 5:
+		baseCompartements();
+		break;
+	case 6:
 		baseStatic();
 		break;
 	default:
@@ -391,10 +420,45 @@ void Pattern::baseChoser() {
 	}
 }
 
+void Pattern::fillCompartmentBack(CRGB color, int num) {
+	switch(num){
+	case 0:
+		fill_solid(leds + OFFSET_COMP_BACK_1, LENGTH_COMP_BACK_1, color);
+		break;
+	case 1:
+		fill_solid(leds + OFFSET_COMP_BACK_2, LENGTH_COMP_BACK_2, color);
+		break;
+	case 2:
+		fill_solid(leds + OFFSET_COMP_BACK_3, LENGTH_COMP_BACK_3, color);
+		break;
+	case 3:
+		fill_solid(leds + OFFSET_COMP_BACK_4, LENGTH_COMP_BACK_4, color);
+		break;
+	}
+}
 
+void Pattern::fillCompartmentFront(CRGB color, int num) {
+	switch(num){
+	case 0:
+		fill_solid(leds + OFFSET_COMP_FRONT_1, LENGTH_COMP_FRONT_1, color);
+		break;
+	case 1:
+		fill_solid(leds + OFFSET_COMP_FRONT_2, LENGTH_COMP_FRONT_2, color);
+		break;
+	case 2:
+		fill_solid(leds + OFFSET_COMP_FRONT_3, LENGTH_COMP_FRONT_3, color);
+		break;
+	case 3:
+		fill_solid(leds + OFFSET_COMP_FRONT_4, LENGTH_COMP_FRONT_4, color);
+		break;
+	}
+}
 
 void Pattern::strobeChoser() {
+
 	int temp = (int)(nstrobePattern / 255 * 4);
+
+
 	//Serial.println(temp);
 	switch(temp){
 	case 1:

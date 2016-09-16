@@ -178,6 +178,7 @@ void setTimes() {
 	millisSinceBeat = now - lastBeat;
 	millisSinceRequest = now - lastRequest;
 	pattern.setMillisSinceBeat((double) millisSinceBeat);
+	pattern.setStrobeTime(millis()- pattern.getStrobeStart());
 }
 
 void loop() {
@@ -242,6 +243,7 @@ void loop() {
 				pattern.setDimVal((double) setMesg.mainDim);
 				pattern.setDutyCycle(((double) setMesg.dutyCycle ));
 				pattern.setSettings();
+				pattern.setStrobeStart(millis());
 				/*Serial.println("Set Message:\t");
 				Serial.print("Basepattern:\t");
 				Serial.println(pattern.getNbasePattern());
