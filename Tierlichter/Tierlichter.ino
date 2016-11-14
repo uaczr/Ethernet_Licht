@@ -284,6 +284,7 @@ void loop() {
 	 * Lichtteil
 	 */
 	//Ausnahmen
+	//pattern.fillBlack();
 	pattern.baseChoser();
 	pattern.frontChoser();
 	pattern.strobeChoser();

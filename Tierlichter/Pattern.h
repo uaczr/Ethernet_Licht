@@ -23,8 +23,8 @@
 #define LENGTH_COMP_BACK_4 3
 
 #define OFFSET_COMP_FRONT_1 25
-#define OFFSET_COMP_FRONT_2 22
-#define OFFSET_COMP_FRONT_3 18
+#define OFFSET_COMP_FRONT_2 21
+#define OFFSET_COMP_FRONT_3 17
 #define OFFSET_COMP_FRONT_4 14
 
 #define LENGTH_COMP_FRONT_1 3
@@ -134,7 +134,9 @@ class Pattern {
 	bool first_strobe;
 	long strobe_start;
 	long strobe_time;
+	uint8_t strobe_comp;
 	uint32_t strobecounter;
+
 
 	size_t length;
 	size_t side_length;
@@ -168,8 +170,11 @@ public:
 
 	void fillCompartmentBack(CRGB color, int num);
 	void fillCompartmentFront(CRGB color, int num);
+	void fillCompartementOneRand(CRGB color, int num);
 
 	//pattern funcitons
+	void switchthrough();
+
 	void baseLinDimm();
 	void baseQuadDimm();
 	void baseRectDimm();
@@ -191,6 +196,7 @@ public:
 	void strobeStandard();
 	void strobeRand();
 	void strobeHalf();
+	void strobePow();
 
 	void fillWhite();
 	void fillBlack();
