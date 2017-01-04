@@ -24,7 +24,6 @@
 using boost::asio::ip::udp;
 using boost::asio::io_service;
 
-
 class Equipment;
 class Communicator {
 private:

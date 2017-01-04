@@ -27,6 +27,7 @@ private:
 	std::mutex m;
 	bool running;
 public:
+	Musikanalysis(BehaviourGenerator* generator, double beatperiod);
 	Musikanalysis(BehaviourGenerator* generator);
 	virtual ~Musikanalysis();
 	static void runAnalysis(Musikanalysis *music);

@@ -175,8 +175,12 @@ void Communicator::loopOut() {
 			first->setIt = false;
 		}
 		if (first->syncIt) {
+			///local connection
+			boost::asio::ip::udp::endpoint ep(boost::asio::ip::address_v4::from_string("127.0.0.1"), 1105);
 			udpSocketOut->send_to(boost::asio::buffer(first->syncMesg.buffer),
 					first->endPoint);
+			udpSocketOut->send_to(boost::asio::buffer(first->syncMesg.buffer),
+					ep);
 			std::cout << "Send Event:\t Syncing Message sent" << std::endl;
 			std::cout << "Port:\t" << first->endPoint.port() << std::endl;
 			std::cout << "Target:\t" << first->endPoint.address().to_string()

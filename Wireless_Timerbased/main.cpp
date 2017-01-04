@@ -46,13 +46,23 @@ void startBehaviour(){
 }
 
 
-int main()
+int main(int argc, char* argv[])
 {
+	double beatperiod = 0;
+	if(argc == 2){
+		beatperiod = (double)atoi(argv[1]);
+	}
 	io_service io;
 	localEndpoint.address(boost::asio::ip::address_v4::from_string("192.168.0.255"));
 	server = new Communicator(2, 1103, &equipments, &sendBuffer, localEndpoint);
 	generator = new BehaviourGenerator(&equipments, &sendBuffer);
-	analyzer = new Musikanalysis(generator);
+	if(beatperiod == 0){
+		analyzer = new Musikanalysis(generator);
+	}
+	else{
+		analyzer = new Musikanalysis(generator, beatperiod);
+	}
+
 
 	server->startIn();
 	server->startOut();

@@ -166,7 +166,7 @@ BeatRec::myProcess(realvec& in, realvec& out)
     	  }
     	  else if(bpmcounter < 12)
     	  {
-    		  buffer(1,0) = 500;
+    		  buffer(1,0) = this->threshold;
     		  bpmcounter++;
     	  }
     	  else
